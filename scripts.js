@@ -1,6 +1,10 @@
 let numA;
 let numB;
 
+let displayNum = '';
+let display = document.querySelector("#displayText");
+let buttons = document.querySelector("#buttons");
+
 let btn1 = document.querySelector("#num1");
 let btn2 = document.querySelector("#num2");
 let btn3 = document.querySelector("#num3");
@@ -12,19 +16,27 @@ let btn8 = document.querySelector("#num8");
 let btn9 = document.querySelector("#num9");
 let btn0 = document.querySelector("#num0");
 
-container.addEventListener("click", (event) => {
+buttons.addEventListener("click", (event) => {
     switch (event.target.id){
-        case 'btn1':
-            
-            break;
-        case 'btn2':
-
-            break;
-        case 'btn3':
-
-            break;
+        case 'num1': updateDisplay('1'); break;
+        case 'num2': updateDisplay('2'); break;
+        case 'num3': updateDisplay('3'); break;
+        case 'num4': updateDisplay('4'); break;
+        case 'num5': updateDisplay('5'); break;
+        case 'num6': updateDisplay('6'); break;
+        case 'num7': updateDisplay('7'); break;
+        case 'num8': updateDisplay('8'); break;
+        case 'num9': updateDisplay('9'); break;
+        case 'num0': updateDisplay('0'); break;
     }
   });
+
+function updateDisplay(digit){
+    if (digit === '0' && displayNum.length === 0) return;
+    else if (displayNum.length >= 7) return;
+    displayNum += digit;
+    display.textContent = displayNum;
+}
 
 //
 
