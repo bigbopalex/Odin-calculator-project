@@ -1,6 +1,8 @@
 let numA = null;
+let numB = null;
 let operator = null;
-let completed;
+
+let completed = false; //helper variable, allow repeat of last operation by pressing enter again 
 
 let displayNum = '';
 let display = document.querySelector("#displayText");
@@ -26,10 +28,6 @@ let btnDecimal = document.querySelector("#decimal");
 let btnEqual = document.querySelector("#equal");
 
 buttons.addEventListener("click", (event) => {
-    if (completed){
-        clearAll();
-        completed = false;
-    }
     switch (event.target.id){
         case 'num1': inputNumber('1'); break;
         case 'num2': inputNumber('2'); break;
@@ -52,40 +50,53 @@ buttons.addEventListener("click", (event) => {
 });
 
 document.addEventListener('keydown', (event) => {
+    //if keypress is a number
     if (/^[0-9]*$/.test(event.key) || event.key === '.') inputNumber(event.key);
     switch (event.key){
         case '/': inputOperator('÷'); break;
         case '*':
-        case 'x': inputOperator('×'); break;
+        case 'x': inputOperator('×'); break
         case '-': inputOperator('−'); break;
         case '+': inputOperator('＋'); break;
+        case '=': 
         case 'Enter': operate(numA, displayNum, operator); break;
-        case 'Backspace': operate(numA, displayNum, operator); break;
+        case 'Backspace': clearButton(); break;
     }
 });
 
 function inputNumber(digit){
-    if ((digit === '0' || digit === '.') && displayNum.length === 0) return;
-    else if (digit === '.' && displayNum.includes('.')) return;
+    if ((digit === '0' || digit === '.') && displayNum.length === 0) return; //first digit cannot be 0 or decimal
+    else if (digit === '.' && displayNum.includes('.')) return; //prevents multiple decimals
     else if (displayNum.length >= 7) return;
     displayNum += digit;
     display.textContent = displayNum;
 }
 
 function inputOperator(operatorInput){
+    //operator can only be inputted if first number has already been inputed
     if (displayNum.length === 0) return;
-    else if (operator === null){
+    else if (operator === null && !completed){
         numA = displayNum;
         operator = operatorInput;
         displayNum = '';
         display.textContent = displayNum;
         displaySubText.textContent = numA + " " + operatorInput;
     }
+    else if (completed && displayNum.length > 0){
+        numA = displayNum;
+        operator = operatorInput;
+        displayNum = '';
+        display.textContent = displayNum;
+        displaySubText.textContent = numA + " " + operatorInput;
+        completed = false;
+    }
     else return;
 }
 
 function clearAll(){
+    completed = false;
     numA = null;
+    numB = null;
     operator = null;
     displayNum = '';
     display.textContent = displayNum;
@@ -93,11 +104,47 @@ function clearAll(){
 }
 
 function clearButton(){
-    if (displayNum.length === 0) clearAll();
+    if (displayNum.length === 0 || completed) clearAll();
     else{
         displayNum = '';
         display.textContent = displayNum;
     }
+}
+
+function reset(inputIsEqualOperator){
+    if (inputIsEqualOperator){
+        displaySubText.textContent = displaySubText.textContent.slice(0, -1);
+        displaySubText.textContent += operator;
+        operate(numA, displayNum, operator); 
+    }
+    else clearAll();
+}
+
+function operate (numAstr, numBstr, operator){
+    //if both numbers have not been inputted yet
+    if (numAstr === null || numBstr.length === 0){
+        return;
+    }
+    if (completed){ //repeat last operation
+        numA = Number(display.textContent);
+        displaySubText.textContent = displaySubText.textContent.slice(0, -1);
+        displaySubText.textContent = numA + " " + operator + " " + numB + " =";
+    }
+    else { 
+        console.log(displaySubText.textContent);
+        displaySubText.textContent += " " + numBstr + " =";
+        numA = Number(numAstr);
+        numB = Number(numBstr);
+    }
+
+    switch (operator){
+        case '＋': displayNum = add(numA,numB).toString(); break;
+        case '−': displayNum = subtract(numA,numB).toString(); break;
+        case '×': displayNum = multiply(numA,numB).toString(); break;
+        case '÷': displayNum = divide(numA,numB).toString(); break;
+    }
+    display.textContent = displayNum;
+    completed = true;
 }
 
 function add(a,b){
@@ -113,22 +160,4 @@ function divide(a,b){
     if (a % b === 0) return a/b;
     else return parseFloat(a/b).toFixed(2);
     //if (b === 0) return "lmao";
-}
-
-function operate (numAstr, numBstr, operator){
-    if (numAstr === null || numBstr.length === 0 || operator === null){
-        return;
-    }
-    else{
-        displaySubText.textContent += " " + numBstr + " =";
-        numA = Number(numAstr);
-        numB = Number(numBstr);
-        switch (operator){
-            case '＋': display.textContent = add(numA,numB); break;
-            case '−': display.textContent = subtract(numA,numB); break;
-            case '×': display.textContent = multiply(numA,numB); break;
-            case '÷': display.textContent = divide(numA,numB); break;
-        }
-        completed = true;
-    }
 }
