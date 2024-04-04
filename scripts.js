@@ -148,20 +148,15 @@ function operate (numAstr, numBstr, operator){
 }
 
 function add(a,b){
-    if ((a + b) % 1 === 0) return a+b;
-    else return parseFloat(a+b).toFixed(2);
+    return (a + b) % 1 === 0 ? a+b : parseFloat(a+b).toFixed(2);
 }
 function subtract (a,b){
-    if ((a - b) % 1 === 0) return a-b;
-    else return parseFloat(a-b).toFixed(2);
+    return (a - b) % 1 === 0 ? a-b : parseFloat(a-b).toFixed(2);
 }
 function multiply (a,b){
-    if ((a * b) % 1 === 0) return a*b;
-    else return parseFloat(a*b).toFixed(2);
+    return (a * b) % 1 === 0 ? a*b : parseFloat(a*b).toFixed(2);
 }
 function divide(a,b){
-    if (a % b === 0) return a/b;
-    else return parseFloat(a/b).toFixed(2);
-
+    return (a % b) === 0 ? a/b : parseFloat(a/b).toFixed(2);
     //if (b === 0) return "lmao";
 }
